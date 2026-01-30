@@ -1,0 +1,219 @@
+# Heavy Projects Queue Implementation - Summary
+
+**Date**: 21 January 2026
+
+## What Changed
+
+### Problem
+Heavy language projects (Rust, C++, Go, Java, C#) were timing out and blocking fast projects (Python, JavaScript) from processing.
+
+### Solution
+✅ **Two-Queue System with Automatic Feeding**
+
+1. **Main Queue** (ideas_log.json): 370 fast projects only
+2. **Heavy Queue** (heavy_projects_queue.json): 304 heavy projects
+3. **Auto-Feeding**: retry_manager feeds ONE heavy project when main queue < 50 items
+
+---
+
+## Implementation Details
+
+### Files Modified
+
+**cleanup_timeout_queue.py**
+- ✅ Updated to create `heavy_projects_queue.json` instead of deleting projects
+- Separates 304 heavy projects from 674 total
+- Saves fast projects to `ideas_log.json`
+- Shows breakdown by language (C++: 94, Go: 84, C#: 72, Java: 29, Rust: 25)
+
+**retry_manager.py**
+- ✅ Added `self.heavy_queue_file = Path('heavy_projects_queue.json')` to `__init__`
+- ✅ Added `_feed_heavy_projects()` method (lines ~340-376)
+  - Checks if main queue < 50 items
+  - Takes ONE heavy project
+  - Adds to ideas_log.json
+  - Removes from heavy_projects_queue.json
+  - Logs action to console
+- ✅ Updated `run()` method to call `_feed_heavy_projects()` each cycle
+- ✅ Updated startup banner to show "Heavy Projects: Run one-at-a-time when main queue < 50 items"
+
+### New Files Created
+
+**HEAVY_PROJECTS_SETUP.md**
+- Complete documentation of setup
+- Monitoring commands
+- Troubleshooting guide
+- Configuration instructions
+
+---
+
+## Current System State
+
+```
+✅ Queues Separated:
+   Fast:   370 projects (Python, JavaScript)
+   Heavy:  304 projects (Rust, C++, Go, Java, C#)
+
+✅ Auto-Feeding Active:
+   Threshold: Main queue < 50 items
+   Batch: ONE heavy project at a time
+   Frequency: Every 30 seconds (retry_manager cycle)
+
+✅ All Services Running:
+   worker2:        PID 1353753
+   retry_manager:  PID 1355797 (with heavy feeding logic)
+   outline:        PID 210171
+```
+
+---
+
+## How It Works in Practice
+
+### Timeline Example
+
+**Hour 1-2**: Fast projects process
+```
+ideas_log.json: 370 → 360 → 350 → ... → 55 items
+heavy_projects_queue.json: 304 items (waiting)
+```
+
+**Hour 2**: Queue drops below 50
+```
+retry_manager detects: len(ideas) = 48
+_feed_heavy_projects() triggers
+Moves "RustyArt" to ideas_log.json
+Log: "⏸️  Fed 1 heavy project: RustyArt (RUST). Remaining: 303"
+```
+
+**Hour 3-12**: RustyArt processes (compilation may take 5-10 hours)
+```
+ideas_log.json: 48 → 40 → 30 → 15 → complete
+worker processes RustyArt with 100x timeout multiplier
+Long compilations don't block other projects
+```
+
+**Hour 12**: RustyArt completes, next heavy feeds
+```
+RustyArt moves to Desktop
+ideas_log drops again: len(ideas) = 30
+_feed_heavy_projects() triggers again
+Moves "Text Adventure Game" (RUST) to ideas_log.json
+Cycle repeats...
+```
+
+---
+
+## Key Features
+
+✅ **No Projects Lost**
+- 304 heavy projects backed up in separate queue
+- Accessible via `heavy_projects_queue.json`
+- Can restore anytime
+
+✅ **Predictable Resource Usage**
+- Only ONE heavy project at a time
+- No RAM spikes from parallel compilations
+- Pi can handle one Rust/C++ compilation without crashing
+
+✅ **Fast Queue Never Starved**
+- Fast projects always prioritized
+- Heavy projects only feed when queue is small
+- Learning database benefits from continuous Python/JS successes
+
+✅ **Smart Timeout Management**
+- Heavy projects get 100x timeout multiplier
+- Fast projects get 50x timeout multiplier
+- No more false timeouts from slow compilations
+
+✅ **Automatic & Hands-Off**
+- retry_manager handles everything
+- No manual intervention needed
+- Self-healing (feeds next heavy project when space available)
+
+---
+
+## Monitoring Commands
+
+### Check queue sizes
+```bash
+echo "Fast queue:" && jq 'length' ideas_log.json
+echo "Heavy queue:" && jq 'length' heavy_projects_queue.json
+```
+
+### Watch heavy projects being fed
+```bash
+tail -f retry_manager.log | grep "⏸️"
+```
+
+### See what's processing
+```bash
+python3 monitor_queue.py --status
+```
+
+### Check heavy project details
+```bash
+# Next heavy project to run
+jq '.[0] | {title, language}' heavy_projects_queue.json
+```
+
+---
+
+## Future Adjustments
+
+### If heavy projects feed too slowly:
+Increase threshold from 50 to 100 in `retry_manager.py`:
+```python
+if len(ideas) > 100:  # More aggressive feeding
+    return
+```
+
+### If heavy projects feed too fast:
+Decrease threshold to 30 in `retry_manager.py`:
+```python
+if len(ideas) > 30:  # Less aggressive feeding
+    return
+```
+
+### To pause heavy projects:
+Rename the queue file:
+```bash
+mv heavy_projects_queue.json heavy_projects_queue.json.paused
+```
+
+### To re-enable everything at once:
+```bash
+cp ideas_log_backup_before_cleanup.json ideas_log.json
+rm heavy_projects_queue.json
+pkill worker2 && python3 -u worker2.py > worker2.log 2>&1 &
+```
+
+---
+
+## Verification Checklist
+
+- ✅ `cleanup_timeout_queue.py` creates `heavy_projects_queue.json`
+- ✅ `heavy_projects_queue.json` contains 304 projects
+- ✅ `ideas_log.json` contains 370 fast projects only
+- ✅ `retry_manager.py` has `_feed_heavy_projects()` method
+- ✅ `retry_manager.py` calls `_feed_heavy_projects()` in run loop
+- ✅ Heavy projects only feed when queue < 50 items
+- ✅ Exactly ONE heavy project fed per cycle
+- ✅ retry_manager startup shows heavy project config
+- ✅ All services running (worker2, retry_manager, outline)
+
+---
+
+## Success Metrics
+
+🎯 **What Success Looks Like:**
+1. Fast queue depletes predictably (no more timeouts)
+2. Heavy projects gradually move from queue to Desktop
+3. Learning database captures fixes from both queues
+4. System remains stable under old Pi hardware
+5. retry_manager logs show periodic "⏸️ Fed 1 heavy project..." messages
+
+---
+
+## Questions?
+
+See `HEAVY_PROJECTS_SETUP.md` for detailed documentation, monitoring, and troubleshooting.

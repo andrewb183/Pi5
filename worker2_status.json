@@ -1,0 +1,92 @@
+{
+  "timestamp": 1769089419.5947168,
+  "queue_size": 0,
+  "slow_queue_size": 50,
+  "workers": {
+    "0": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L1 (v4)",
+      "started_at": 1769088557.8935757,
+      "preferred_model": "deepseek-r1",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L3 (v4) [qwen2.5-coder]"
+    },
+    "1": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L2 (v2)",
+      "started_at": 1769089334.3983152,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L4 (v2) [qwen2.5-coder]"
+    },
+    "2": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L1 (v3)",
+      "started_at": 1769088299.20713,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L3 (v3) [qwen2.5-coder]"
+    },
+    "3": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L2 (v3)",
+      "started_at": 1769089418.182663,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L4 (v3) [qwen2.5-coder]"
+    },
+    "4": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L1 (v1)",
+      "started_at": 1769087781.8089237,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L3 (v1) [qwen2.5-coder]"
+    },
+    "5": {
+      "status": "working",
+      "task": "\"Weather Forecast Application\" - Escalation L4 (v5)",
+      "started_at": 1769089419.5947123,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L2 (v5) [qwen2.5-coder]"
+    },
+    "6": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L1 (v2)",
+      "started_at": 1769088040.4541523,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L3 (v2) [qwen2.5-coder]"
+    },
+    "7": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L2 (v4)",
+      "started_at": 1769089419.0266383,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L4 (v4) [qwen2.5-coder]"
+    },
+    "8": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L1 (v5)",
+      "started_at": 1769088816.7513666,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L3 (v5) [qwen2.5-coder]"
+    },
+    "9": {
+      "status": "working",
+      "task": "Image Color Palette Generator - Escalation L2 (v1)",
+      "started_at": 1769089075.6715982,
+      "preferred_model": "qwen2.5-coder",
+      "language": "c#",
+      "last_completed": "\"Weather Forecast Application\" - Escalation L4 (v1) [qwen2.5-coder]"
+    }
+  },
+  "model_health": {
+    "qwen2.5-coder": true,
+    "deepseek-r1": true
+  },
+  "preferred_model": "deepseek-r1"
+}

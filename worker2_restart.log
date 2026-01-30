@@ -1,0 +1,579 @@
+nohup: ignoring input
+ℹ️ Loaded 5 tasks from ideas_log.json
+ℹ️ Loaded 1 tasks from QAissue.json
+Overall Progress |          | 0/6 [00:00<?]                                           📦 Task 'Interactive Story Generator' routed to SLOW_QUEUE (heavy processing)
+Overall Progress |          | 0/6 [00:00<?]                                           📦 Task 'Image Resizer with Multi-threading' routed to SLOW_QUEUE (heavy processing)
+Overall Progress |          | 0/6 [00:00<?]                                           📦 Task 'GoLang Web Scraper' routed to SLOW_QUEUE (heavy processing)
+Overall Progress |          | 0/6 [00:00<?]                                           📦 Task 'langchain' routed to SLOW_QUEUE (heavy processing)
+Overall Progress |          | 0/6 [00:00<?]
+Worker 0 |          |   0% [00:00<?] [A
+Worker 0 |          |   0% [00:00<?] [A
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+Worker 1 |          |   0% [00:00<?] [A[A
+
+
+Implementing free-programming-books: |          | 0/5 [00:00<?][A[A[A
+
+
+Implementing free-programming-books: |          | 0/5 [00:00<?][A[A[A✓ Project already completed at implementation_outputs/free-programming-books
+Implementing free-programming-books: |          | 0/5 [00:00<?]
+
+
+Worker 1 |          |   0% [00:00<?] [A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+Worker 2 |          |   0% [00:00<?] [A[A[A                                           
+                                                                      [A
+
+
+                                     [A[A[A
+
+                                                                      [A[A📦 Worker 2 processing from SLOW_QUEUE: Interactive Story Generator
+Overall Progress |          | 0/6 [00:00<?]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] [A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+
+Implementing free-programming-books: |          | 0/5 [00:00<?][A[A[A[A
+
+
+
+Implementing free-programming-books: |          | 0/5 [00:00<?][A[A[A[A✓ Project already completed at implementation_outputs/free-programming-books
+Implementing free-programming-books: |          | 0/5 [00:00<?]
+
+
+
+Worker 2 |          |   0% [00:00<?] [A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Interactive Story Generator (C#)[A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Interactive Story Generator (C#)[A[A[A                                           
+                                                                      [A
+
+
+                                                                       [A[A[A
+
+                                                                      [A[A⏭️ Skipping deepseek-r1 for Interactive Story Generator (model unhealthy)
+Overall Progress |          | 0/6 [00:00<?]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Interactive Story Generator (C#)[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A                                           
+                                                                      [A
+
+
+                                                                       [A[A[A
+
+                                                                      [A[A⏭️ Skipping qwen2.5-coder for Interactive Story Generator (model unhealthy)
+Overall Progress |          | 0/6 [00:00<?]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |█████     |  50% [00:00<00:00] , Interactive Story Generator (C#)[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+Worker 2 |██████████| 100% [00:00<00:00] , Idle                            [A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle    [A[A[A                                           
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A📦 Worker 2 processing from SLOW_QUEUE: Image Resizer with Multi-threading
+Overall Progress |█▋        | 1/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Image Resizer with Multi-threading (C#)[A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Image Resizer with Multi-threading (C#)[A[A[A                                               
+                                                                      [A
+
+
+                                                                              [A[A[A
+
+                                                                      [A[A⏭️ Skipping deepseek-r1 for Image Resizer with Multi-threading (model unhealthy)
+Overall Progress |█▋        | 1/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Image Resizer with Multi-threading (C#)[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A                                               
+                                                                      [A
+
+
+                                                                              [A[A[A
+
+                                                                      [A[A⏭️ Skipping qwen2.5-coder for Image Resizer with Multi-threading (model unhealthy)
+Overall Progress |█▋        | 1/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |█████     |  50% [00:00<00:00] , Image Resizer with Multi-threading (C#)[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[AOverall Progress |███▎      | 2/6 [00:00<00:00]
+
+
+Worker 2 |██████████| 100% [00:00<00:00] , Idle                                   [A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle    [A[A[A                                               
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A📦 Worker 2 processing from SLOW_QUEUE: GoLang Web Scraper
+Overall Progress |███▎      | 2/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , GoLang Web Scraper (Go)[A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , GoLang Web Scraper (Go)[A[A[A                                               
+                                                                      [A
+
+
+                                                              [A[A[A
+
+                                                                      [A[A⏭️ Skipping deepseek-r1 for GoLang Web Scraper (model unhealthy)
+Overall Progress |███▎      | 2/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , GoLang Web Scraper (Go)[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A                                               
+                                                                      [A
+
+
+                                                              [A[A[A
+
+                                                                      [A[A⏭️ Skipping qwen2.5-coder for GoLang Web Scraper (model unhealthy)
+Overall Progress |███▎      | 2/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |█████     |  50% [00:00<00:00] , GoLang Web Scraper (Go)[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+Worker 2 |██████████| 100% [00:00<00:00] , Idle                   [A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle    [A[A[A                                               
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A📦 Worker 2 processing from SLOW_QUEUE: langchain
+Overall Progress |█████     | 3/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , langchain (Python)[A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , langchain (Python)[A[A[A                                               
+                                                                      [A
+
+
+                                                         [A[A[A
+
+                                                                      [A[A⏭️ Skipping deepseek-r1 for langchain (model unhealthy)
+Overall Progress |█████     | 3/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , langchain (Python)[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A                                               
+                                                                      [A
+
+
+                                                         [A[A[A
+
+                                                                      [A[A⏭️ Skipping qwen2.5-coder for langchain (model unhealthy)
+Overall Progress |█████     | 3/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |█████     |  50% [00:00<00:00] , langchain (Python)[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+Worker 2 |██████████| 100% [00:00<00:00] , Idle              [A[A[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle    [A[A[A
+
+
+
+Worker 3 |          |   0% [00:00<?] [A[A[A[A
+
+
+
+
+Worker 4 |          |   0% [00:00<?] [A[A[A[A[A
+
+
+
+
+
+Worker 5 |          |   0% [00:00<?] [A[A[A[A[A[A                                               
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A
+
+
+
+                                     [A[A[A[A
+
+
+
+
+                                     [A[A[A[A[A
+
+
+
+
+
+                                     [A[A[A[A[A[A✅ Worker 0 finished free-programming-books → implementation_outputs/free-programming-books
+Overall Progress |██████▋   | 4/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+
+Worker 3 |          |   0% [00:00<?] [A[A[A[A
+
+
+
+
+Worker 4 |          |   0% [00:00<?] [A[A[A[A[A
+
+
+
+
+
+Worker 5 |          |   0% [00:00<?] [A[A[A[A[A[A                                               
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A
+
+
+
+                                     [A[A[A[A
+
+
+
+
+                                     [A[A[A[A[A
+
+
+
+
+
+                                     [A[A[A[A[A[A✅ Worker 1 finished free-programming-books → implementation_outputs/free-programming-books
+Overall Progress |██████▋   | 4/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+
+Worker 3 |          |   0% [00:00<?] [A[A[A[A
+
+
+
+
+Worker 4 |          |   0% [00:00<?] [A[A[A[A[A
+
+
+
+
+
+Worker 5 |          |   0% [00:00<?] [A[A[A[A[A[A                                               
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A
+
+
+
+                                     [A[A[A[A
+
+
+
+
+                                     [A[A[A[A[A
+
+
+
+
+
+                                     [A[A[A[A[A[A🩺 Model health: qwen2.5-coder → OK
+Overall Progress |██████▋   | 4/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+
+Worker 3 |          |   0% [00:00<?] [A[A[A[A
+
+
+
+
+Worker 4 |          |   0% [00:00<?] [A[A[A[A[A
+
+
+
+
+
+Worker 5 |          |   0% [00:00<?] [A[A[A[A[A[A                                               
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A
+
+
+
+                                     [A[A[A[A
+
+
+
+
+                                     [A[A[A[A[A
+
+
+
+
+
+                                     [A[A[A[A[A[A🩺 Model health: deepseek-r1 → OK
+Overall Progress |██████▋   | 4/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+
+Worker 3 |          |   0% [00:00<?] [A[A[A[A
+
+
+
+
+Worker 4 |          |   0% [00:00<?] [A[A[A[A[A
+
+
+
+
+
+Worker 5 |          |   0% [00:00<?] [A[A[A[A[A[A                                               
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A
+
+
+
+                                     [A[A[A[A
+
+
+
+
+                                     [A[A[A[A[A
+
+
+
+
+
+                                     [A[A[A[A[A[A🎗 Prioritizing deepseek-r1 (worker0) while others use qwen
+Overall Progress |██████▋   | 4/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+
+Worker 3 |          |   0% [00:00<?] [A[A[A[A
+
+
+
+
+Worker 4 |          |   0% [00:00<?] [A[A[A[A[A
+
+
+
+
+
+Worker 5 |          |   0% [00:00<?] [A[A[A[A[A[A                                               
+                                                                      [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A
+
+
+
+                                     [A[A[A[A
+
+
+
+
+                                     [A[A[A[A[A
+
+
+
+
+
+                                     [A[A[A[A[A[A🧹 Removed entries for 'free-programming-books' from queues
+Overall Progress |██████▋   | 4/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , free-programming-books (Python)[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+
+Worker 3 |          |   0% [00:00<?] [A[A[A[A
+
+
+
+
+Worker 4 |          |   0% [00:00<?] [A[A[A[A[A
+
+
+
+
+
+Worker 5 |          |   0% [00:00<?] [A[A[A[A[A[A
+Worker 0 |██████████| 100% [00:00<00:00] , free-programming-books (Python)[AOverall Progress |████████▎ | 5/6 [00:00<00:00]
+Worker 0 |██████████| 100% [00:00<00:00] , Idle                           [A
+Worker 0 |          |   0% [00:00<?] , Idle    [A                                               
+                                           [A
+
+
+                                           [A[A[A
+
+                                                                      [A[A
+
+
+
+                                     [A[A[A[A
+
+
+
+
+                                     [A[A[A[A[A
+
+
+
+
+
+                                     [A[A[A[A[A[A🧹 Removed entries for 'free-programming-books' from queues
+Overall Progress |████████▎ | 5/6 [00:00<00:00]
+Worker 0 |          |   0% [00:00<?] , Idle[A
+
+
+Worker 2 |          |   0% [00:00<?] , Idle[A[A[A
+
+Worker 1 |          |   0% [00:00<?] , free-programming-books (Python)[A[A
+
+
+
+Worker 3 |          |   0% [00:00<?] [A[A[A[A
+
+
+
+
+Worker 4 |          |   0% [00:00<?] [A[A[A[A[A
+
+
+
+
+
+Worker 5 |          |   0% [00:00<?] [A[A[A[A[A[A
+
+Worker 1 |██████████| 100% [00:00<00:00] , free-programming-books (Python)[A[A
+
+Worker 1 |██████████| 100% [00:00<00:00] , Idle                           [A[A
+
+Worker 1 |          |   0% [00:00<?] , Idle    [A[AOverall Progress |██████████| 6/6 [00:01<00:00]Overall Progress |██████████| 6/6 [00:02<00:00]Overall Progress |██████████| 6/6 [00:03<00:00]Overall Progress |██████████| 6/6 [00:04<00:00]Overall Progress |██████████| 6/6 [00:05<00:00]Overall Progress |██████████| 6/6 [00:06<00:00]Overall Progress |██████████| 6/6 [00:07<00:00]Overall Progress |██████████| 6/6 [00:08<00:00]Overall Progress |██████████| 6/6 [00:09<00:00]Overall Progress |██████████| 6/6 [00:10<00:00]Overall Progress |██████████| 6/6 [00:11<00:00]Overall Progress |██████████| 6/6 [00:12<00:00]Overall Progress |██████████| 6/6 [00:13<00:00]Overall Progress |██████████| 6/6 [00:14<00:00]Overall Progress |██████████| 6/6 [00:15<00:00]Overall Progress |██████████| 6/6 [00:16<00:00]Overall Progress |██████████| 6/6 [00:17<00:00]Overall Progress |██████████| 6/6 [00:18<00:00]Overall Progress |██████████| 6/6 [00:19<00:00]Overall Progress |██████████| 6/6 [00:20<00:00]Overall Progress |██████████| 6/6 [00:20<00:00]Overall Progress |██████████| 6/6 [00:21<00:00]Overall Progress |██████████| 6/6 [00:22<00:00]Overall Progress |██████████| 6/6 [00:23<00:00]Overall Progress |██████████| 6/6 [00:24<00:00]Overall Progress |██████████| 6/6 [00:25<00:00]Overall Progress |██████████| 6/6 [00:26<00:00]Overall Progress |██████████| 6/6 [00:27<00:00]Overall Progress |██████████| 6/6 [00:28<00:00]Overall Progress |██████████| 6/6 [00:29<00:00]Overall Progress |██████████| 6/6 [00:30<00:00]Overall Progress |██████████| 6/6 [00:31<00:00]Overall Progress |██████████| 6/6 [00:32<00:00]Overall Progress |██████████| 6/6 [00:33<00:00]Overall Progress |██████████| 6/6 [00:34<00:00]Overall Progress |██████████| 6/6 [00:35<00:00]Overall Progress |██████████| 6/6 [00:36<00:00]Overall Progress |██████████| 6/6 [00:37<00:00]Overall Progress |██████████| 6/6 [00:38<00:00]Overall Progress |██████████| 6/6 [00:39<00:00]Overall Progress |██████████| 6/6 [00:40<00:00]Overall Progress |██████████| 6/6 [00:41<00:00]Overall Progress |██████████| 6/6 [00:42<00:00]Overall Progress |██████████| 6/6 [00:43<00:00]Overall Progress |██████████| 6/6 [00:44<00:00]Overall Progress |██████████| 6/6 [00:45<00:00]Overall Progress |██████████| 6/6 [00:46<00:00]Overall Progress |██████████| 6/6 [00:47<00:00]Overall Progress |██████████| 6/6 [00:48<00:00]Overall Progress |██████████| 6/6 [00:49<00:00]Overall Progress |██████████| 6/6 [00:50<00:00]Overall Progress |██████████| 6/6 [00:51<00:00]Overall Progress |██████████| 6/6 [00:52<00:00]Overall Progress |██████████| 6/6 [00:53<00:00]Overall Progress |██████████| 6/6 [00:54<00:00]Overall Progress |██████████| 6/6 [00:55<00:00]Overall Progress |██████████| 6/6 [00:56<00:00]Overall Progress |██████████| 6/6 [00:57<00:00]Overall Progress |██████████| 6/6 [00:58<00:00]Overall Progress |██████████| 6/6 [00:59<00:00]Overall Progress |██████████| 6/6 [01:00<00:00]Overall Progress |██████████| 6/6 [01:01<00:00]Overall Progress |██████████| 6/6 [01:02<00:00]Overall Progress |██████████| 6/6 [01:03<00:00]Overall Progress |██████████| 6/6 [01:04<00:00]Overall Progress |██████████| 6/6 [01:05<00:00]Overall Progress |██████████| 6/6 [01:06<00:00]Overall Progress |██████████| 6/6 [01:07<00:00]Overall Progress |██████████| 6/6 [01:08<00:00]Overall Progress |██████████| 6/6 [01:09<00:00]Overall Progress |██████████| 6/6 [01:10<00:00]Overall Progress |██████████| 6/6 [01:11<00:00]Overall Progress |██████████| 6/6 [01:12<00:00]Overall Progress |██████████| 6/6 [01:13<00:00]Overall Progress |██████████| 6/6 [01:14<00:00]Overall Progress |██████████| 6/6 [01:15<00:00]Overall Progress |██████████| 6/6 [01:16<00:00]Overall Progress |██████████| 6/6 [01:17<00:00]Overall Progress |██████████| 6/6 [01:18<00:00]Overall Progress |██████████| 6/6 [01:19<00:00]Overall Progress |██████████| 6/6 [01:20<00:00]Overall Progress |██████████| 6/6 [01:21<00:00]Overall Progress |██████████| 6/6 [01:22<00:00]Overall Progress |██████████| 6/6 [01:23<00:00]Overall Progress |██████████| 6/6 [01:24<00:00]Overall Progress |██████████| 6/6 [01:25<00:00]Overall Progress |██████████| 6/6 [01:26<00:00]Overall Progress |██████████| 6/6 [01:27<00:00]Overall Progress |██████████| 6/6 [01:28<00:00]Overall Progress |██████████| 6/6 [01:29<00:00]Overall Progress |██████████| 6/6 [01:30<00:00]Overall Progress |██████████| 6/6 [01:31<00:00]Overall Progress |██████████| 6/6 [01:32<00:00]Overall Progress |██████████| 6/6 [01:33<00:00]Overall Progress |██████████| 6/6 [01:34<00:00]Overall Progress |██████████| 6/6 [01:35<00:00]Overall Progress |██████████| 6/6 [01:36<00:00]Overall Progress |██████████| 6/6 [01:37<00:00]Overall Progress |██████████| 6/6 [01:38<00:00]Overall Progress |██████████| 6/6 [01:39<00:00]

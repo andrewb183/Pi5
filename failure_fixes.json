@@ -1,0 +1,175 @@
+{
+  "failures": {
+    "_8": {
+      "project_name": "",
+      "retry_count": 8,
+      "language": "Python",
+      "qa_score": 0,
+      "analysis": {
+        "pattern": "unknown",
+        "confidence": 0,
+        "errors": [],
+        "error_types": [],
+        "error_messages": [],
+        "total_attempts": 0,
+        "most_common_error": "unknown",
+        "recommendation": "No error log found"
+      },
+      "fix_strategy": {
+        "fix_type": "comprehensive_fix",
+        "instructions": [
+          "Multiple issues present",
+          "Start with simplest working version",
+          "Add features incrementally",
+          "Test each addition"
+        ],
+        "prompt_additions": "Build incrementally. Start with minimal working version. Add complexity only after basics work.",
+        "priority": "high",
+        "error_details": [],
+        "language": "Python",
+        "attempts": 0
+      },
+      "logged_at": "2026-01-16T08:52:18.810190"
+    },
+    "_5": {
+      "project_name": "",
+      "retry_count": 5,
+      "language": "Python",
+      "qa_score": 0,
+      "analysis": {
+        "pattern": "unknown",
+        "confidence": 0,
+        "errors": [],
+        "error_types": [],
+        "error_messages": [],
+        "total_attempts": 0,
+        "most_common_error": "unknown",
+        "recommendation": "No error log found"
+      },
+      "fix_strategy": {
+        "fix_type": "comprehensive_fix",
+        "instructions": [
+          "Multiple issues present",
+          "Start with simplest working version",
+          "Add features incrementally",
+          "Test each addition"
+        ],
+        "prompt_additions": "Build incrementally. Start with minimal working version. Add complexity only after basics work.",
+        "priority": "high",
+        "error_details": [],
+        "language": "Python",
+        "attempts": 0
+      },
+      "logged_at": "2026-01-16T08:52:18.822777"
+    },
+    "_3": {
+      "project_name": "",
+      "retry_count": 3,
+      "language": "JavaScript",
+      "qa_score": 0,
+      "analysis": {
+        "pattern": "unknown",
+        "confidence": 0,
+        "errors": [],
+        "error_types": [],
+        "error_messages": [],
+        "total_attempts": 0,
+        "most_common_error": "unknown",
+        "recommendation": "No error log found"
+      },
+      "fix_strategy": {
+        "fix_type": "comprehensive_fix",
+        "instructions": [
+          "Multiple issues present",
+          "Start with simplest working version",
+          "Add features incrementally",
+          "Test each addition"
+        ],
+        "prompt_additions": "Build incrementally. Start with minimal working version. Add complexity only after basics work.",
+        "priority": "high",
+        "error_details": [],
+        "language": "JavaScript",
+        "attempts": 0
+      },
+      "logged_at": "2026-01-16T08:52:18.532252"
+    },
+    "_4": {
+      "project_name": "",
+      "retry_count": 4,
+      "language": "JavaScript",
+      "qa_score": 0,
+      "analysis": {
+        "pattern": "unknown",
+        "confidence": 0,
+        "errors": [],
+        "error_types": [],
+        "error_messages": [],
+        "total_attempts": 0,
+        "most_common_error": "unknown",
+        "recommendation": "No error log found"
+      },
+      "fix_strategy": {
+        "fix_type": "comprehensive_fix",
+        "instructions": [
+          "Multiple issues present",
+          "Start with simplest working version",
+          "Add features incrementally",
+          "Test each addition"
+        ],
+        "prompt_additions": "Build incrementally. Start with minimal working version. Add complexity only after basics work.",
+        "priority": "high",
+        "error_details": [],
+        "language": "JavaScript",
+        "attempts": 0
+      },
+      "logged_at": "2026-01-16T08:52:18.786328"
+    },
+    "_6": {
+      "project_name": "",
+      "retry_count": 6,
+      "language": "Python",
+      "qa_score": 0,
+      "analysis": {
+        "pattern": "unknown",
+        "confidence": 0,
+        "errors": [],
+        "error_types": [],
+        "error_messages": [],
+        "total_attempts": 0,
+        "most_common_error": "unknown",
+        "recommendation": "No error log found"
+      },
+      "fix_strategy": {
+        "fix_type": "comprehensive_fix",
+        "instructions": [
+          "Multiple issues present",
+          "Start with simplest working version",
+          "Add features incrementally",
+          "Test each addition"
+        ],
+        "prompt_additions": "Build incrementally. Start with minimal working version. Add complexity only after basics work.",
+        "priority": "high",
+        "error_details": [],
+        "language": "Python",
+        "attempts": 0
+      },
+      "logged_at": "2026-01-16T08:52:18.556537"
+    }
+  },
+  "fixes": {
+    "fundamental_redesign": {
+      "count": 14819,
+      "examples": [
+        ""
+      ],
+      "success_rate": 0.0
+    },
+    "comprehensive_fix": {
+      "count": 2788,
+      "examples": [
+        ""
+      ],
+      "success_rate": 0.0
+    }
+  }
+}

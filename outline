@@ -1,0 +1,724 @@
+#!/usr/bin/env python3
+import tkinter as tk
+from tkinter import ttk, messagebox, scrolledtext, filedialog
+import threading
+import queue
+import time
+import json
+import os
+import requests
+import random
+import subprocess
+from datetime import datetime
+import signal
+
+class IdeaGeneratorApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Background Code Idea Generator")
+        self.root.geometry("600x500")
+        # Safety flags: auto-send ENABLED for continuous processing
+        self.auto_send_enabled = True
+        self.auto_task_drop_enabled = True  # enable dropping task files for worker2
+        
+        #self.models = ["qwen2.5-coder", "llama2", "deepseek-r1"]
+        #self.model_ports = {"qwen2.5-coder": 11435, "llama2": 11436, "deepseek-r1": 11437}
+        self.models = ["qwen2.5-coder"]
+        # Single qwen serve managed by systemd
+        self.model_ports = {"qwen2.5-coder": [11435]} 
+        self.languages = ["Python", "JavaScript", "Java", "C++", "C#", "Go", "Rust"]
+        self.idea_queue = queue.Queue()
+        self.running = False
+        self.thread = None
+        self.mode = "Generate"
+        self.loaded_ideas = []
+        self.web_ideas_used = []
+        self.shown_ideas = set()  # Track shown idea titles to prevent duplicates
+        self.models_loaded = False
+        self.serve_processes = []
+        
+        # GUI Elements
+        frame = ttk.Frame(root)
+        frame.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        
+        # Mode selection
+        ttk.Label(frame, text="Mode:").grid(row=0, column=0, sticky=tk.W)
+        self.mode_var = tk.StringVar(value="Generate")
+        ttk.Radiobutton(frame, text="Generate New Ideas", variable=self.mode_var, 
+                        value="Generate", command=self.update_mode).grid(row=0, column=1, sticky=tk.W)
+        ttk.Radiobutton(frame, text="Load Ideas from File", variable=self.mode_var, 
+                        value="Load", command=self.update_mode).grid(row=0, column=2, sticky=tk.W)
+        ttk.Radiobutton(frame, text="Fetch Ideas from Web", variable=self.mode_var, 
+                        value="Web", command=self.update_mode).grid(row=0, column=3, sticky=tk.W)
+        
+        # Load button
+        self.load_button = ttk.Button(frame, text="Select Ideas File", 
+                                      command=self.load_ideas_from_file, state=tk.DISABLED)
+        self.load_button.grid(row=1, column=0, columnspan=2, pady=5, sticky=tk.EW)
+        
+        # Start/Stop button
+        self.start_stop_button = ttk.Button(frame, text="Start Generation", 
+                                           command=self.toggle_generation)
+        self.start_stop_button.grid(row=1, column=2, columnspan=2, pady=5, sticky=tk.EW)
+        
+        # Status label
+        self.status_label = ttk.Label(frame, text="Status: Stopped")
+        self.status_label.grid(row=2, column=0, columnspan=4, pady=5, sticky=tk.W)
+        
+        # Log display
+        ttk.Label(frame, text="Generation Log:").grid(row=3, column=0, columnspan=4, sticky=tk.W)
+        self.log_text = scrolledtext.ScrolledText(frame, height=15, width=70)
+        self.log_text.grid(row=4, column=0, columnspan=4, sticky=tk.NSEW, pady=5)
+        
+        frame.grid_rowconfigure(4, weight=1)
+        frame.grid_columnconfigure(0, weight=1)
+        
+        # Load existing ideas log
+        self.load_ideas_log()
+        
+        # Start popup checker
+        self.check_popup_queue()
+        
+        # Handle window close
+        self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
+
+        # Start worker2 automatically on startup
+        threading.Thread(target=self.ensure_worker2_running, daemon=True).start()
+
+        # Start loading models in background
+        threading.Thread(target=self.load_models, daemon=True).start()
+    
+    def update_mode(self):
+        self.mode = self.mode_var.get()
+        self.mode = self.mode_var.get()
+        if self.mode == "Load":
+            self.load_button.config(state=tk.NORMAL)
+        else:
+            self.load_button.config(state=tk.DISABLED)
+    
+    def toggle_generation(self):
+        if self.running:
+            self.running = False
+            self.status_label.config(text="Status: Stopping...")
+            if self.thread:
+                self.thread.join(timeout=200)
+            self.start_stop_button.config(text="Start Generation")
+            self.log("Generation stopped")
+            self.status_label.config(text="Status: Stopped")
+        else:
+            if not self.models_loaded:
+                messagebox.showinfo("Info", "Models are still loading. Please wait.")
+                return
+            self.running = True
+            self.thread = threading.Thread(target=self.generation_loop, daemon=True)
+            self.thread.start()
+            self.start_stop_button.config(text="Stop Generation")
+            self.log("Generation started")
+            self.status_label.config(text="Status: Running")
+
+    def generation_loop(self):
+        while self.running:
+            try:
+                if self.mode == "Load":
+                    if self.loaded_ideas:
+                        idea = self.loaded_ideas.pop(0)
+                        self.idea_queue.put(idea)
+                        self.save_idea(idea)
+                        self.log(f"Loaded idea: {idea['title']}")
+                    else:
+                        self.running = False
+                        self.root.after(0, lambda: self.status_label.config(text="Status: No more ideas"))
+                        break
+                elif self.mode == "Web":
+                    idea = self.fetch_web_idea()
+                    if idea:
+                        self.idea_queue.put(idea)
+                        self.save_idea(idea)
+                        self.log(f"Fetched idea from web: {idea['title']}")
+                        # Check if we have a web idea to pass to mk14
+                        self.attempt_mk14_integration(idea)
+                else:
+                    idea = self.generate_idea()
+                    if idea:
+                        self.idea_queue.put(idea)
+                        self.save_idea(idea)
+                        self.log(f"Generated idea: {idea['title']}")
+                
+                time.sleep(300)  # 5 minutes between generations
+            except Exception as e:
+                self.log(f"Error in generation loop: {str(e)}")
+                time.sleep(60)
+
+    def generate_idea(self):
+        language = random.choice(self.languages)
+        prompt = f"Generate a creative idea for a new {language} code project. Provide a title, a brief description, and a sample code snippet. Format as: Title: <title>\nDescription: <desc>\nCode:\n```{language.lower()}\n<code>\n```"
+        
+        for model in self.models:
+            ports = self.model_ports.get(model, [])
+            for port in ports:
+                try:
+                    response = requests.post(
+                        f"http://localhost:{port}/api/generate",
+                        json={
+                            "model": model,
+                            "prompt": prompt,
+                            "stream": False
+                        },
+                        timeout=13000
+                    )
+                    
+                    if response.status_code == 200:
+                        result = response.json().get('response', '')
+                        if result:
+                            idea = self.parse_idea(result, language)
+                            if idea:
+                                return idea
+                except requests.exceptions.Timeout:
+                    self.log(f"⚠ Timeout for model {model} on {port}, trying next")
+                except requests.exceptions.ConnectionError:
+                    self.log(f"⚠ Connection error for model {model} on {port}, trying next")
+                except Exception as e:
+                    self.log(f"⚠ Error with model {model} on {port}: {str(e)}, trying next")
+        
+        self.log("✗ Failed to generate idea from all models")
+        return None
+
+    def fetch_web_idea(self):
+        # Define multiple API sources
+        sources = [
+            {
+                "name": "github",
+                "url": "https://api.github.com/search/repositories?q=language:python&sort=stars&order=desc&per_page=20",
+                "parser": self._parse_github_response
+            },
+            {
+                "name": "gitlab",
+                "url": "https://gitlab.com/api/v4/projects?order_by=stars&sort=desc&per_page=20",
+                "parser": self._parse_gitlab_response
+            },
+            {
+                "name": "libraries.io",
+                "url": "https://libraries.io/api/search?q=&platforms=pypi&sort=stars&per_page=20",
+                "parser": self._parse_librariesio_response
+            },
+            {
+                "name": "bitbucket",
+                "url": "https://api.bitbucket.org/2.0/repositories?q=language=\"python\"&sort=-updated_on&pagelen=20",
+                "parser": self._parse_bitbucket_response
+            }
+        ]
+        
+        # Try sources in random order
+        random.shuffle(sources)
+        
+        for source in sources:
+            try:
+                self.log(f"Fetching from {source['name']}...")
+                response = requests.get(source["url"], timeout=15)
+                
+                if response.status_code == 200:
+                    idea = source["parser"](response.json(), source["name"])
+                    if idea:
+                        return idea
+                else:
+                    self.log(f"⚠ {source['name']} returned status {response.status_code}")
+            except requests.exceptions.Timeout:
+                self.log(f"⚠ Timeout fetching from {source['name']}")
+            except Exception as e:
+                self.log(f"⚠ Error with {source['name']}: {str(e)}")
+        
+        self.log("✗ Failed to fetch ideas from all sources")
+        return None
+    
+    def _parse_github_response(self, data, source_name):
+        """Parse GitHub API response"""
+        repos = data.get('items', [])
+        if not repos:
+            return None
+        
+        available_repos = [r for r in repos if r['id'] not in self.web_ideas_used]
+        if not available_repos:
+            self.web_ideas_used = []
+            available_repos = repos
+        
+        repo = random.choice(available_repos)
+        self.web_ideas_used.append(repo['id'])
+        
+        title = repo['name']
+        description = repo.get('description') or "A trending GitHub repository."
+        url = repo['html_url']
+        code = f"# {title}\n# Source: {url}\n# Description: {description}\n# Add your implementation here\nprint('Starting {title}')\n"
+        
+        return {
+            "title": title,
+            "description": description,
+            "code": code,
+            "language": "Python",
+            "source": source_name,
+            "url": url,
+            "timestamp": time.time()
+        }
+    
+    def _parse_gitlab_response(self, data, source_name):
+        """Parse GitLab API response"""
+        if not data or not isinstance(data, list):
+            return None
+        
+        available_repos = [r for r in data if r['id'] not in self.web_ideas_used]
+        if not available_repos:
+            self.web_ideas_used = []
+            available_repos = data
+        
+        if not available_repos:
+            return None
+        
+        repo = random.choice(available_repos)
+        self.web_ideas_used.append(repo['id'])
+        
+        title = repo.get('name', 'Untitled')
+        description = repo.get('description') or "A trending GitLab project."
+        url = repo.get('web_url', '')
+        code = f"# {title}\n# Source: {url}\n# Description: {description}\n# Add your implementation here\nprint('Starting {title}')\n"
+        
+        return {
+            "title": title,
+            "description": description,
+            "code": code,
+            "language": "Python",
+            "source": source_name,
+            "url": url,
+            "timestamp": time.time()
+        }
+    
+    def _parse_librariesio_response(self, data, source_name):
+        """Parse Libraries.io API response"""
+        items = data if isinstance(data, list) else []
+        if not items:
+            return None
+        
+        available_items = [r for r in items if r.get('name') not in self.web_ideas_used]
+        if not available_items:
+            self.web_ideas_used = []
+            available_items = items
+        
+        if not available_items:
+            return None
+        
+        item = random.choice(available_items)
+        self.web_ideas_used.append(item.get('name'))
+        
+        title = item.get('name', 'Untitled')
+        description = item.get('description') or "A popular Python library."
+        url = item.get('repository_url', '') or item.get('homepage', '')
+        code = f"# {title}\n# Source: {url}\n# Description: {description}\n# Installation: pip install {title}\nimport {title.lower().replace('-', '_')}\n\nprint('Using {title}')\n"
+        
+        return {
+            "title": title,
+            "description": description,
+            "code": code,
+            "language": "Python",
+            "source": source_name,
+            "url": url,
+            "timestamp": time.time()
+        }
+    
+    def _parse_bitbucket_response(self, data, source_name):
+        """Parse Bitbucket API response"""
+        repos = data.get('values', [])
+        if not repos:
+            return None
+        
+        available_repos = [r for r in repos if r.get('uuid') not in self.web_ideas_used]
+        if not available_repos:
+            self.web_ideas_used = []
+            available_repos = repos
+        
+        if not available_repos:
+            return None
+        
+        repo = random.choice(available_repos)
+        self.web_ideas_used.append(repo.get('uuid'))
+        
+        title = repo.get('name', 'Untitled')
+        description = repo.get('description') or "A Bitbucket repository."
+        url = repo.get('links', {}).get('html', {}).get('href', '')
+        code = f"# {title}\n# Source: {url}\n# Description: {description}\n# Add your implementation here\nprint('Starting {title}')\n"
+        
+        return {
+            "title": title,
+            "description": description,
+            "code": code,
+            "language": "Python",
+            "source": source_name,
+            "url": url,
+            "timestamp": time.time()
+        }
+
+    def parse_idea(self, response, language):
+        lines = response.split('\n')
+        title = ""
+        description = ""
+        code = ""
+        in_code = False
+        backtick_count = 0
+        
+        for line in lines:
+            if line.startswith("Title:"):
+                title = line[6:].strip()
+            elif line.startswith("Description:"):
+                description = line[12:].strip()
+            elif line.startswith("Code:"):
+                in_code = True
+            elif in_code:
+                if line.strip().startswith("```"):
+                    backtick_count += 1
+                    if backtick_count == 2:
+                        break
+                else:
+                    code += line + '\n'
+        
+        if title and (description or code):
+            return {
+                "title": title,
+                "description": description,
+                "code": code.strip(),
+                "language": language,
+                "timestamp": time.time()
+            }
+        
+        return None
+
+    def save_idea(self, idea):
+        ideas_file = os.path.join(os.path.dirname(__file__), "ideas_log.json")
+        try:
+            if os.path.exists(ideas_file) and os.path.getsize(ideas_file) > 0:
+                with open(ideas_file, 'r') as f:
+                    ideas = json.load(f)
+            else:
+                ideas = []
+            
+            ideas.append(idea)
+            
+            with open(ideas_file, 'w') as f:
+                json.dump(ideas, f, indent=4)
+            
+            # Optional: drop task file for worker2 only if enabled
+            if self.auto_task_drop_enabled:
+                impl_dir = os.path.join(os.path.dirname(__file__), "implementations")
+                os.makedirs(impl_dir, exist_ok=True)
+                task_path = os.path.join(impl_dir, f"idea_{int(time.time()*1000)}.json")
+                with open(task_path, 'w') as tf:
+                    json.dump(idea, tf)
+                # Ensure worker2 is running to process ideas
+                self.ensure_worker2_running()
+            else:
+                self.log("Auto task drop disabled; idea saved but not queued for mk14.")
+        except Exception as e:
+            self.log(f"⚠ Error saving idea: {str(e)}")
+    
+    def load_ideas_log(self):
+        ideas_file = os.path.join(os.path.dirname(__file__), "ideas_log.json")
+        try:
+            if os.path.exists(ideas_file) and os.path.getsize(ideas_file) > 0:
+                with open(ideas_file, 'r') as f:
+                    ideas = json.load(f)
+                self.log(f"Loaded {len(ideas)} ideas from history (showing last 5)")
+                for idea in ideas[-5:]:
+                    timestamp = datetime.fromtimestamp(idea['timestamp']).strftime("%Y-%m-%d %H:%M:%S")
+                    self.log(f"  • {idea['title']} ({timestamp})")
+            else:
+                self.log("No ideas history found (file empty or missing)")
+        except Exception as e:
+            self.log(f"⚠ Error loading ideas log: {str(e)}")
+
+    def check_popup_queue(self):
+        try:
+            while True:
+                idea = self.idea_queue.get_nowait()
+                # Skip if already shown
+                idea_title = idea.get('title', '')
+                if idea_title not in self.shown_ideas:
+                    self.shown_ideas.add(idea_title)
+                    self.show_popup(idea)
+                else:
+                    self.log(f"⏭️ Skipping duplicate idea: {idea_title}")
+        except queue.Empty:
+            pass
+        self.root.after(1000, self.check_popup_queue)
+
+    def load_ideas_from_file(self):
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Text files", "*.txt"), ("JSON files", "*.json")]
+        )
+        if not file_path:
+            return
+        
+        try:
+            with open(file_path, 'r') as f:
+                if file_path.endswith('.json'):
+                    self.loaded_ideas = json.load(f)
+                    if not isinstance(self.loaded_ideas, list):
+                        self.loaded_ideas = [self.loaded_ideas]
+                else:
+                    content = f.read()
+                    blocks = content.split('---')
+                    self.loaded_ideas = []
+                    for block in blocks:
+                        if block.strip():
+                            idea = self.parse_idea(block.strip(), "Python")
+                            if idea:
+                                self.loaded_ideas.append(idea)
+            
+            for idea in self.loaded_ideas:
+                if 'language' not in idea:
+                    idea['language'] = 'Python'
+            
+            self.log(f"✓ Loaded {len(self.loaded_ideas)} ideas from file")
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to load file: {str(e)}")
+            self.log(f"✗ Failed to load file: {str(e)}")
+
+    def show_popup(self, idea):
+        popup = tk.Toplevel(self.root)
+        popup.title("New Code Idea!")
+        popup.geometry("600x500")
+        popup.attributes('-topmost', True)
+        
+        # Title
+        title_label = ttk.Label(popup, text=f"Title: {idea['title']}", 
+                               font=("Arial", 12, "bold"))
+        title_label.pack(pady=5)
+        
+        # Language and metadata
+        meta_text = f"Language: {idea.get('language', 'Python')}"
+        if 'source' in idea:
+            meta_text += f" | Source: {idea['source']}"
+        meta_label = ttk.Label(popup, text=meta_text, font=("Arial", 10))
+        meta_label.pack(pady=2)
+        
+        # Description
+        desc_label = ttk.Label(popup, text=f"Description: {idea['description']}", 
+                              wraplength=550, justify=tk.LEFT)
+        desc_label.pack(pady=5, padx=10, fill=tk.X)
+        
+        # Code display
+        code_frame = ttk.Frame(popup)
+        code_frame.pack(pady=5, padx=10, fill=tk.BOTH, expand=True)
+        
+        ttk.Label(code_frame, text="Sample Code:").pack(anchor=tk.W)
+        
+        code_text = scrolledtext.ScrolledText(code_frame, height=12, width=70)
+        code_text.insert(tk.END, idea['code'])
+        code_text.config(state=tk.DISABLED)
+        code_text.pack(fill=tk.BOTH, expand=True)
+        
+        # Buttons
+        button_frame = ttk.Frame(popup)
+        button_frame.pack(pady=10, fill=tk.X, padx=10)
+        
+        def save_code():
+            lang = idea.get('language', 'Python')
+            ext_map = {
+                "Python": ".py",
+                "JavaScript": ".js",
+                "Java": ".java",
+                "C++": ".cpp",
+                "C#": ".cs",
+                "Go": ".go",
+                "Rust": ".rs"
+            }
+            ext = ext_map.get(lang, ".txt")
+            filename = f"{idea['title'].replace(' ', '_')}{ext}"
+            filepath = os.path.join(os.path.dirname(__file__), filename)
+            
+            try:
+                with open(filepath, 'w') as f:
+                    f.write(idea['code'])
+                messagebox.showinfo("Saved", f"Code saved to {filename}")
+                self.log(f"✓ Code saved: {filename}")
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to save: {str(e)}")
+                self.log(f"✗ Failed to save code: {str(e)}")
+            
+            popup.destroy()
+        
+        def pass_to_mk14():
+            if self._has_mk14():
+                try:
+                    self.log(f"→ Passing idea to mk14: {idea['title']}")
+                    # mk14 implementation will be added later
+                    subprocess.Popen(["python3", "mk14.py", json.dumps(idea)])
+                    messagebox.showinfo("Success", "Idea passed to mk14 for implementation")
+                except Exception as e:
+                    messagebox.showerror("Error", f"Failed to pass to mk14: {str(e)}")
+                    self.log(f"✗ Failed to pass to mk14: {str(e)}")
+            else:
+                messagebox.showinfo("Info", "mk14 program not available yet")
+            
+            popup.destroy()
+        
+        def dismiss():
+            popup.destroy()
+        
+        ttk.Button(button_frame, text="Save Code", command=save_code).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Pass to mk14", command=pass_to_mk14).pack(side=tk.LEFT, padx=5)
+        ttk.Button(button_frame, text="Dismiss", command=dismiss).pack(side=tk.RIGHT, padx=5)
+        
+        # Make it non-modal
+        popup.transient(self.root)
+        popup.grab_release()
+    
+    def _has_mk14(self):
+        return os.path.exists(os.path.join(os.path.dirname(__file__), "mk14.py"))
+    
+    def attempt_mk14_integration(self, idea):
+        if not self.auto_send_enabled:
+            self.log("Auto-send to mk14 disabled; skipping pass-through.")
+            return False
+        if self._has_mk14() and idea.get('source') in ['github', 'gitlab', 'bitbucket', 'libraries.io']:
+            try:
+                self.log(f"→ Attempting to pass web idea to mk14: {idea['title']}")
+                subprocess.Popen(["python3", "mk14.py", json.dumps(idea)])
+                return True
+            except Exception as e:
+                self.log(f"⚠ Could not pass to mk14: {str(e)}")
+                return False
+        return False
+    def log(self, message):
+        timestamp = datetime.now().strftime("%H:%M:%S")
+        log_message = f"[{timestamp}] {message}"
+        print(log_message)  # Add print for testing
+        self.log_text.insert(tk.END, log_message + "\n")
+        self.log_text.see(tk.END)
+        self.log_text.update()
+    
+    def ensure_worker2_running(self):
+        """Check if worker2 is running and start it if not."""
+        try:
+            # Check if worker2 process is running
+            result = subprocess.run(
+                ["pgrep", "-f", "worker2.run_workers"],
+                capture_output=True,
+                text=True
+            )
+            
+            if result.returncode != 0:  # Not running
+                self.log("🚀 Starting worker2 to process ideas...")
+                script_dir = os.path.dirname(__file__)
+                subprocess.Popen(
+                    ["python3", "-c", "import asyncio, worker2; asyncio.run(worker2.run_workers())"],
+                    cwd=script_dir,
+                    stdout=open(os.path.join(script_dir, "worker2.log"), "w"),
+                    stderr=subprocess.STDOUT
+                )
+                self.log("✓ worker2 started in background")
+            else:
+                self.log("✓ worker2 already running")
+        except Exception as e:
+            self.log(f"⚠ Could not check/start worker2: {str(e)}")
+    
+    def on_closing(self):
+        self.running = False
+        if self.thread:
+            self.thread.join(timeout=20000)
+        for p in self.serve_processes:
+            p.terminate()
+        self.root.destroy()
+
+    def load_models(self):
+        def update_status(text):
+            self.root.after(0, lambda: self.status_label.config(text=text))
+        
+        def enable_button():
+            self.root.after(0, lambda: self.start_stop_button.config(state=tk.NORMAL))
+        
+        def disable_button():
+            self.root.after(0, lambda: self.start_stop_button.config(state=tk.DISABLED))
+        
+        disable_button()
+        update_status("Status: Loading models...")
+        
+        loaded_models = []
+        
+        for model in self.models:
+            ports = self.model_ports.get(model, [])
+            for port in ports:
+                try:
+                    self.log(f"Checking model {model} on port {port}...")
+                    
+                    try:
+                        # First check if service is running via tags endpoint (faster)
+                        tags_response = requests.get(
+                            f"http://localhost:{port}/api/tags",
+                            timeout=3
+                        )
+                        
+                        if tags_response.status_code == 200:
+                            tags_data = tags_response.json()
+                            model_names = [m.get('name', '') for m in tags_data.get('models', [])]
+                            
+                            if any(model in name for name in model_names):
+                                self.log(f"✓ Model {model} available on port {port}")
+                                loaded_models.append(model)
+                                break  # one healthy port is enough
+                            else:
+                                self.log(f"✗ Model {model} not found on port {port}")
+                        else:
+                            self.log(f"✗ Service on port {port} returned status {tags_response.status_code}")
+                            
+                    except requests.exceptions.Timeout:
+                        self.log(f"⚠ Timeout checking {model} on port {port} (service may be busy)")
+                        # Still consider it loaded if port responds
+                        try:
+                            # Quick TCP check
+                            import socket
+                            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                            sock.settimeout(1)
+                            result = sock.connect_ex(('localhost', port))
+                            sock.close()
+                            if result == 0:
+                                self.log(f"✓ Port {port} is responding, assuming {model} is loaded (but busy)")
+                                loaded_models.append(model)
+                                break
+                        except:
+                            pass
+                    except requests.exceptions.ConnectionError:
+                        self.log(f"✗ Cannot connect to port {port}")
+                    except Exception as e:
+                        self.log(f"✗ Error checking {model} on port {port}: {str(e)}")
+                            
+                except Exception as e:
+                    self.log(f"✗ Error for {model} on port {port}: {str(e)}")
+        
+        # Update self.models to only loaded ones
+        self.models = loaded_models
+        self.log(f"Loaded {len(self.models)} out of {len(self.model_ports)} models")
+        
+        self.models_loaded = True
+        update_status("Status: Models loaded")
+        enable_button()
+
+def main():
+    root = tk.Tk()
+    app = IdeaGeneratorApp(root)
+    
+    # Handle Ctrl+C gracefully via signal
+    def handle_sigint(signum, frame):
+        try:
+            app.on_closing()
+        except Exception:
+            pass
+        root.quit()
+    
+    signal.signal(signal.SIGINT, handle_sigint)
+    
+    try:
+        root.mainloop()
+    except KeyboardInterrupt:
+        try:
+            app.on_closing()
+        except Exception:
+            pass
+
+if __name__ == "__main__":
+    main()
